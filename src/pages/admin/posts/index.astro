@@ -1,0 +1,61 @@
+---
+export const prerender = false;
+
+import AdminPageLayout from '../../../layouts/AdminPageLayout.astro';
+import AdminLayout from '../../../components/admin/AdminLayout.vue';
+import { byPublishDateDesc } from '../../../lib/api';
+import { getPosts } from '../../../lib/posts';
+
+const posts = getPosts().sort(byPublishDateDesc);
+---
+<AdminPageLayout title="Posts">
+<AdminLayout client:load={false} title="Posts" currentPath={Astro.url.pathname}>
+  <section class="mx-auto flex max-w-6xl flex-col gap-6">
+    <div class="flex flex-wrap items-center justify-between gap-3">
+      <div>
+        <p class="text-sm font-semibold uppercase tracking-[0.2em] text-primary">Admin</p>
+        <h1 class="text-3xl font-bold">Posts</h1>
+      </div>
+      <a href="/admin/posts/new" class="btn btn-primary">New post</a>
+    </div>
+
+    {posts.length === 0 ? (
+      <div class="alert alert-info"><span>No posts found.</span></div>
+    ) : (
+      <div class="overflow-x-auto rounded-box border border-base-300 bg-base-100">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Status</th>
+              <th>Publish date</th>
+              <th>Updated</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {posts.map((post: { title: string; slug: string; draft: boolean; publishDate: string; updatedDate?: string }) => (
+              <tr>
+                <td>
+                  <div class="font-semibold">{post.title}</div>
+                  <div class="text-sm text-base-content/60">/{post.slug}</div>
+                </td>
+                <td>
+                  <span class={`badge ${post.draft ? 'badge-warning' : 'badge-success'}`}>
+                    {post.draft ? 'Draft' : 'Published'}
+                  </span>
+                </td>
+                <td>{post.publishDate}</td>
+                <td>{post.updatedDate ?? '—'}</td>
+                <td class="text-right">
+                  <a href={`/admin/posts/${post.slug}`} class="btn btn-sm btn-outline">Edit</a>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    )}
+  </section>
+</AdminLayout>
+</AdminPageLayout>

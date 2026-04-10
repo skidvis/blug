@@ -1,0 +1,44 @@
+---
+export const prerender = false;
+
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { COOKIE_NAME, verifyToken } from '../../lib/auth';
+
+const token = Astro.cookies.get(COOKIE_NAME)?.value;
+if (token && (await verifyToken(token))) {
+  return Astro.redirect('/admin/posts');
+}
+
+const error = Astro.url.searchParams.get('error') === '1';
+---
+<BaseLayout title="Admin login" description="Log in to manage blug posts.">
+  <section class="flex min-h-[70vh] items-center justify-center">
+    <div class="card w-full max-w-md border border-base-300 bg-base-100 shadow-xl">
+      <div class="card-body gap-4">
+        <div class="space-y-2 text-center">
+          <p class="text-sm font-semibold uppercase tracking-[0.2em] text-primary">Admin</p>
+          <h1 class="text-3xl font-bold">Sign in</h1>
+          <p class="text-base-content/70">Use your configured admin credentials.</p>
+        </div>
+
+        {error && (
+          <div class="alert alert-error">
+            <span>Invalid username or password.</span>
+          </div>
+        )}
+
+        <form method="POST" action="/api/auth/login" class="space-y-4">
+          <label class="form-control">
+            <span class="label-text mb-2 block font-medium">Username</span>
+            <input name="username" type="text" class="input input-bordered w-full" required />
+          </label>
+          <label class="form-control">
+            <span class="label-text mb-2 block font-medium">Password</span>
+            <input name="password" type="password" class="input input-bordered w-full" required />
+          </label>
+          <button type="submit" class="btn btn-primary w-full">Login</button>
+        </form>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

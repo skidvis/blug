@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">Blue and purple gradient cover</title>
+  <desc id="desc">Abstract gradient used as a blog cover image.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1d4ed8" />
+      <stop offset="50%" stop-color="#7c3aed" />
+      <stop offset="100%" stop-color="#f97316" />
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)" rx="32" />
+  <circle cx="220" cy="180" r="110" fill="rgba(255,255,255,0.18)" />
+  <circle cx="960" cy="170" r="140" fill="rgba(255,255,255,0.1)" />
+  <circle cx="840" cy="470" r="180" fill="rgba(255,255,255,0.08)" />
+</svg>

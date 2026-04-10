@@ -1,0 +1,190 @@
+---
+export const prerender = true;
+
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PostCard from '../components/PostCard.vue';
+
+const allPosts = (await getCollection('blog'))
+  .filter((p) => !p.data.draft)
+  .sort((a, b) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf());
+
+// Most-used tags for the quick-filter strip under the hero
+const tagCounts = new Map<string, number>();
+for (const p of allPosts) {
+  for (const t of p.data.tags) tagCounts.set(t, (tagCounts.get(t) ?? 0) + 1);
+}
+const topTags = [...tagCounts.entries()]
+  .sort((a, b) => b[1] - a[1])
+  .slice(0, 7)
+  .map(([tag]) => tag);
+---
+<BaseLayout
+  title="Home"
+  description="A personal blog built with Astro, Vue, Tailwind, DaisyUI, RSS, and Pagefind."
+>
+  <div class="mx-auto max-w-4xl space-y-14">
+
+    <!-- ═══════════════════════════════════════ HERO ══════════ -->
+    <section aria-labelledby="hero-heading">
+      <div class="relative overflow-hidden rounded-3xl border border-base-300/60 bg-base-100 shadow-card">
+
+        <!-- Decorative dot-grid -->
+        <div
+          class="pointer-events-none absolute inset-0 opacity-[0.035]"
+          style="background-image: radial-gradient(circle, currentColor 1px, transparent 1px); background-size: 22px 22px;"
+          aria-hidden="true"
+        ></div>
+
+        <!-- Blue glow blob -->
+        <div
+          class="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-primary/8 blur-3xl"
+          aria-hidden="true"
+        ></div>
+
+        <div class="relative z-10 px-8 py-12 sm:px-12 sm:py-16">
+          <div class="max-w-xl space-y-7">
+
+            <!-- Eyebrow -->
+            <span class="eyebrow">Personal blog</span>
+
+            <!-- Headline -->
+            <h1
+              id="hero-heading"
+              class="text-balance text-4xl font-extrabold tracking-tight text-base-content sm:text-5xl lg:text-[3.25rem] lg:leading-[1.1]"
+            >
+              Thoughtful writing,{' '}
+              <span class="text-primary">static by default.</span>
+            </h1>
+
+            <!-- Subline -->
+            <p class="text-lg leading-relaxed text-base-content/55">
+              An Astro-powered blog with typed markdown posts, tag archives,
+              full-text search, and RSS — all generated at build time.
+            </p>
+
+            <!-- CTAs -->
+            <div class="flex flex-wrap items-center gap-3">
+              <a
+                href="/search"
+                class="btn btn-primary gap-2 rounded-xl px-5 shadow-sm"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+                </svg>
+                Search posts
+              </a>
+              <a
+                href="/tags/"
+                class="btn btn-ghost gap-2 rounded-xl border border-base-300 bg-base-100 px-5 text-base-content/70 hover:border-primary/30 hover:text-primary"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M12 2H2v10l9.29 9.29a1 1 0 0 0 1.41 0l7.71-7.71a1 1 0 0 0 0-1.41z"/>
+                  <circle cx="7" cy="7" r="1"/>
+                </svg>
+                Browse tags
+              </a>
+            </div>
+
+            <!-- Stat pills -->
+            <div class="flex flex-wrap items-center gap-3 pt-1">
+              <div class="flex items-center gap-1.5 rounded-full border border-base-300/80 bg-base-200 px-3 py-1.5 text-xs font-medium text-base-content/55">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-primary/60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                  <polyline points="14 2 14 8 20 8"/>
+                </svg>
+                {allPosts.length} posts
+              </div>
+              <div class="flex items-center gap-1.5 rounded-full border border-base-300/80 bg-base-200 px-3 py-1.5 text-xs font-medium text-base-content/55">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-primary/60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M12 2H2v10l9.29 9.29a1 1 0 0 0 1.41 0l7.71-7.71a1 1 0 0 0 0-1.41z"/>
+                  <circle cx="7" cy="7" r="1"/>
+                </svg>
+                {tagCounts.size} tags
+              </div>
+              <a
+                href="/rss.xml"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="flex items-center gap-1.5 rounded-full border border-base-300/80 bg-base-200 px-3 py-1.5 text-xs font-medium text-base-content/55 transition-colors hover:border-primary/30 hover:text-primary"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-primary/60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/>
+                </svg>
+                RSS feed
+              </a>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- Tag quick-filter strip (only render if tags exist) -->
+      {topTags.length > 0 && (
+        <div class="mt-4 flex flex-wrap items-center gap-2 px-1">
+          <span class="text-2xs font-semibold uppercase tracking-[0.1em] text-base-content/35 mr-1">
+            Topics:
+          </span>
+          {topTags.map((tag) => (
+            <a
+              href={`/tags/${encodeURIComponent(tag)}/`}
+              class="tag-chip"
+            >
+              <span class="select-none opacity-30" aria-hidden="true">#</span>
+              {tag}
+            </a>
+          ))}
+          <a
+            href="/tags/"
+            class="text-2xs font-medium text-primary/70 hover:text-primary transition-colors ml-1"
+          >
+            all tags →
+          </a>
+        </div>
+      )}
+    </section>
+
+    <!-- ═══════════════════════════════════════ POSTS ═════════ -->
+    <section aria-labelledby="posts-heading">
+
+      <!-- Section header -->
+      <div class="mb-7 flex items-center gap-3">
+        <h2 id="posts-heading" class="text-xl font-bold tracking-tight text-base-content">
+          Latest posts
+        </h2>
+        <div class="h-px flex-1 bg-base-300/60" aria-hidden="true"></div>
+        <span class="text-sm font-medium text-base-content/40">
+          {allPosts.length} published
+        </span>
+      </div>
+
+      <!-- Post list -->
+      {allPosts.length === 0 ? (
+        <div class="empty-state">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-base-content/20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+          </svg>
+          <p class="font-medium text-base-content/40">No posts published yet.</p>
+          <p class="text-sm text-base-content/30">Check back soon.</p>
+        </div>
+      ) : (
+        <div class="space-y-4">
+          {allPosts.map((post, i) => (
+            <PostCard
+              client:load
+              title={post.data.title}
+              description={post.data.description}
+              slug={post.id}
+              publishDate={post.data.publishDate.toISOString()}
+              tags={post.data.tags}
+              coverImage={post.data.coverImage}
+              featured={i === 0}
+            />
+          ))}
+        </div>
+      )}
+    </section>
+
+  </div>
+</BaseLayout>

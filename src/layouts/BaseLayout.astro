@@ -1,0 +1,231 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description } = Astro.props;
+
+// Active-state detection — compares against current pathname
+const currentPath = Astro.url.pathname;
+function isActive(href: string) {
+  if (href === '/') return currentPath === '/';
+  return currentPath.startsWith(href);
+}
+---
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title} | blug</title>
+    {description && <meta name="description" content={description} />}
+
+    <!-- RSS autodiscovery -->
+    <link rel="alternate" type="application/rss+xml" href="/rss.xml" title="blug RSS feed" />
+
+    <!-- Fonts: Plus Jakarta Sans weights 400–800, including italic -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600&display=swap"
+      rel="stylesheet"
+    />
+
+    <!--
+      Theme-init: runs synchronously before first paint to prevent
+      flash-of-wrong-theme (FOWT). Reads localStorage, falls back to
+      prefers-color-scheme.
+    -->
+    <script is:inline>
+      (function () {
+        var stored = localStorage.getItem('blug-theme');
+        var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        var theme = stored || (prefersDark ? 'dark' : 'light');
+        document.documentElement.setAttribute('data-theme', theme);
+      })();
+    </script>
+  </head>
+
+  <body class="min-h-screen bg-base-200 text-base-content font-sans antialiased">
+    <!-- Reading progress bar (wired by post-page script) -->
+    <div id="reading-progress" role="progressbar" aria-hidden="true"></div>
+
+    <div class="flex min-h-screen flex-col">
+
+      <!-- ═══════════════════════════════════ NAVBAR ═══════ -->
+      <header
+        class="sticky top-0 z-30 border-b border-base-300/50 bg-base-100/90 backdrop-blur-md"
+        role="banner"
+      >
+        <div class="mx-auto flex h-16 w-full max-w-6xl items-center px-4 sm:px-6 lg:px-8">
+
+          <!-- Brand mark -->
+          <a
+            href="/"
+            class="group mr-6 flex shrink-0 items-center gap-2.5 font-extrabold tracking-tight text-base-content transition-opacity hover:opacity-75"
+            aria-label="blug — home"
+          >
+            <span
+              class="inline-flex h-7 w-7 items-center justify-center rounded-lg bg-primary text-primary-content text-sm font-black shadow-sm"
+              aria-hidden="true"
+            >B</span>
+            <span class="text-[1.05rem]">blug</span>
+          </a>
+
+          <!-- Spacer -->
+          <div class="flex-1" />
+
+          <!-- Primary nav -->
+          <nav class="flex items-center gap-0.5" aria-label="Primary navigation">
+
+            <a
+              href="/search"
+              class:list={['nav-link', isActive('/search') && 'nav-link-active']}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-[15px] w-[15px] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+              </svg>
+              <span class="hidden sm:inline">Search</span>
+            </a>
+
+            <a
+              href="/tags/"
+              class:list={['nav-link', isActive('/tags') && 'nav-link-active']}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-[15px] w-[15px] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M12 2H2v10l9.29 9.29a1 1 0 0 0 1.41 0l7.71-7.71a1 1 0 0 0 0-1.41z"/>
+                <circle cx="7" cy="7" r="1"/>
+              </svg>
+              <span class="hidden sm:inline">Tags</span>
+            </a>
+
+            <a
+              href="/rss.xml"
+              class="nav-link"
+              aria-label="Subscribe via RSS"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-[15px] w-[15px] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/>
+              </svg>
+              <span class="hidden lg:inline">RSS</span>
+            </a>
+
+            <!-- Vertical divider -->
+            <div class="mx-1 h-5 w-px bg-base-300" aria-hidden="true"></div>
+
+            <!-- Theme toggle -->
+            <button
+              id="theme-toggle"
+              type="button"
+              class="nav-link"
+              aria-label="Toggle dark mode"
+            >
+              <!-- Sun icon — visible in dark mode -->
+              <svg id="icon-sun" xmlns="http://www.w3.org/2000/svg" class="hidden h-[15px] w-[15px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="12" cy="12" r="4"/>
+                <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>
+              </svg>
+              <!-- Moon icon — visible in light mode -->
+              <svg id="icon-moon" xmlns="http://www.w3.org/2000/svg" class="h-[15px] w-[15px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+              </svg>
+            </button>
+          </nav>
+        </div>
+      </header>
+
+      <!-- ═══════════════════════════════════ MAIN ══════════ -->
+      <main
+        id="main-content"
+        class="mx-auto w-full max-w-6xl flex-1 px-4 py-10 sm:px-6 sm:py-14 lg:px-8"
+      >
+        <slot />
+      </main>
+
+      <!-- ═══════════════════════════════════ FOOTER ════════ -->
+      <footer class="border-t border-base-300/50 bg-base-100/90 backdrop-blur-md">
+        <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+          <div class="flex flex-col items-center justify-between gap-5 py-9 text-sm text-base-content/45 sm:flex-row">
+
+            <!-- Brand -->
+            <a
+              href="/"
+              class="flex items-center gap-2 font-semibold text-base-content/60 transition-colors hover:text-base-content"
+            >
+              <span
+                class="inline-flex h-5 w-5 items-center justify-center rounded bg-primary/12 text-primary text-[10px] font-black"
+                aria-hidden="true"
+              >B</span>
+              blug
+            </a>
+
+            <!-- Centre nav -->
+            <nav class="flex flex-wrap items-center justify-center gap-x-5 gap-y-1" aria-label="Footer navigation">
+              <a href="/" class="transition-colors hover:text-base-content">Home</a>
+              <a href="/search" class="transition-colors hover:text-base-content">Search</a>
+              <a href="/tags/" class="transition-colors hover:text-base-content">Tags</a>
+              <a href="/rss.xml" target="_blank" rel="noopener noreferrer" class="transition-colors hover:text-base-content">RSS</a>
+            </nav>
+
+            <!-- Right: attribution -->
+            <p class="text-xs text-base-content/35">
+              Built with
+              <a
+                href="https://astro.build"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="text-base-content/50 underline underline-offset-2 transition-colors hover:text-base-content"
+              >Astro</a>
+            </p>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <!-- ═══════════════════════════════════ THEME SCRIPT ══ -->
+    <!--
+      Runs after DOM ready. Wires the toggle button and syncs icons
+      to the theme already applied by the inline <head> script.
+    -->
+    <script is:inline>
+      (function () {
+        function applyTheme(theme) {
+          document.documentElement.setAttribute('data-theme', theme);
+          localStorage.setItem('blug-theme', theme);
+
+          var sun  = document.getElementById('icon-sun');
+          var moon = document.getElementById('icon-moon');
+          if (!sun || !moon) return;
+
+          if (theme === 'dark') {
+            sun.classList.remove('hidden');
+            moon.classList.add('hidden');
+          } else {
+            sun.classList.add('hidden');
+            moon.classList.remove('hidden');
+          }
+        }
+
+        // Sync icons to whatever the head script already applied
+        var current = document.documentElement.getAttribute('data-theme') || 'light';
+        document.addEventListener('DOMContentLoaded', function () {
+          applyTheme(current);
+
+          var btn = document.getElementById('theme-toggle');
+          if (btn) {
+            btn.addEventListener('click', function () {
+              var next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+              applyTheme(next);
+            });
+          }
+        });
+      })();
+    </script>
+  </body>
+</html>

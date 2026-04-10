@@ -1,0 +1,262 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ═══════════════════════════════════════════════════════════════
+   BASE — font stack, root tokens, global defaults
+   ═══════════════════════════════════════════════════════════════ */
+@layer base {
+  :root {
+    --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    --prose-leading: 1.85;
+    --t-fast:   150ms ease-out;
+    --t-base:   200ms ease-out;
+    --t-slow:   300ms ease-out;
+  }
+
+  html {
+    font-family: var(--font-sans);
+    scroll-behavior: smooth;
+    scrollbar-gutter: stable;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+
+  :focus-visible {
+    @apply outline-none ring-2 ring-primary ring-offset-2 ring-offset-base-100 rounded-md;
+  }
+
+  ::selection {
+    @apply bg-primary/20 text-base-content;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   COMPONENTS — single-source utility classes
+   ═══════════════════════════════════════════════════════════════ */
+@layer components {
+
+  /* ── Navbar link ─────────────────────────────────────────────── */
+  .nav-link {
+    @apply relative flex items-center gap-1.5 rounded-lg px-3 py-2
+           text-sm font-medium text-base-content/55
+           transition-colors duration-150
+           hover:bg-base-200 hover:text-base-content
+           cursor-pointer select-none;
+  }
+
+  .nav-link-active {
+    @apply text-primary font-semibold bg-primary/8;
+  }
+
+  /* ── Tag chip — base ─────────────────────────────────────────── */
+  .tag-chip {
+    @apply inline-flex items-center gap-0.5 rounded-full
+           border border-base-300 bg-base-100
+           px-2.5 py-[3px] text-xs font-medium text-base-content/65
+           transition-all duration-150
+           hover:border-primary/35 hover:bg-primary/6 hover:text-primary
+           cursor-pointer select-none;
+  }
+
+  /* Solid variant — post footer "Filed under" */
+  .tag-chip-solid {
+    @apply tag-chip border-primary/20 bg-primary/8 text-primary
+           hover:bg-primary/14 hover:border-primary/40;
+  }
+
+  /* Large variant — tag index page */
+  .tag-chip-lg {
+    @apply tag-chip px-3 py-1 text-sm;
+  }
+
+  /* ── Eyebrow label ───────────────────────────────────────────── */
+  .eyebrow {
+    @apply inline-flex items-center gap-1.5
+           text-xs font-semibold uppercase tracking-[0.12em] text-primary/80;
+  }
+
+  /* ── Post card ───────────────────────────────────────────────── */
+  .post-card {
+    @apply rounded-2xl border border-base-300/80 bg-base-100
+           shadow-sm
+           transition-all duration-200
+           hover:border-primary/25 hover:shadow-[0_4px_20px_-4px_rgb(37_99_235_/_0.10)];
+  }
+
+  /* Featured card — 3 px primary left border */
+  .featured-card {
+    border-left: 3px solid theme('colors.blue.500');
+  }
+
+  [data-theme="dark"] .featured-card {
+    border-left-color: theme('colors.blue.400');
+  }
+
+  /* ── Reading progress bar ─────────────────────────────────────── */
+  #reading-progress {
+    @apply fixed top-0 left-0 z-50 h-[2px] w-0 bg-primary;
+    transition: none;
+  }
+
+  /* ── Breadcrumb link ──────────────────────────────────────────── */
+  .breadcrumb-link {
+    @apply inline-flex items-center gap-1.5
+           text-sm font-medium text-base-content/45
+           transition-colors duration-150 hover:text-primary;
+  }
+
+  /* ── Empty state ─────────────────────────────────────────────── */
+  .empty-state {
+    @apply flex flex-col items-center justify-center gap-3
+           rounded-2xl border border-dashed border-base-300
+           bg-base-100 px-6 py-14 text-center;
+  }
+
+  /* ── Keyboard shortcut badge ─────────────────────────────────── */
+  .kbd-badge {
+    @apply inline-flex items-center rounded-md border border-base-300
+           bg-base-200 px-1.5 py-0.5 font-mono text-xs text-base-content/50;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   PROSE — @tailwindcss/typography token overrides
+   ═══════════════════════════════════════════════════════════════ */
+@layer components {
+  .prose-blug {
+    --tw-prose-body:          theme('colors.slate.700');
+    --tw-prose-headings:      theme('colors.slate.900');
+    --tw-prose-lead:          theme('colors.slate.600');
+    --tw-prose-links:         theme('colors.blue.600');
+    --tw-prose-bold:          theme('colors.slate.900');
+    --tw-prose-counters:      theme('colors.slate.500');
+    --tw-prose-bullets:       theme('colors.slate.300');
+    --tw-prose-hr:            theme('colors.slate.200');
+    --tw-prose-quotes:        theme('colors.slate.900');
+    --tw-prose-quote-borders: theme('colors.blue.200');
+    --tw-prose-captions:      theme('colors.slate.500');
+    --tw-prose-code:          theme('colors.slate.800');
+    --tw-prose-pre-code:      theme('colors.slate.200');
+    --tw-prose-pre-bg:        theme('colors.slate.900');
+    --tw-prose-th-borders:    theme('colors.slate.300');
+    --tw-prose-td-borders:    theme('colors.slate.200');
+  }
+
+  [data-theme="dark"] .prose-blug {
+    --tw-prose-body:          theme('colors.slate.300');
+    --tw-prose-headings:      theme('colors.slate.100');
+    --tw-prose-lead:          theme('colors.slate.400');
+    --tw-prose-links:         theme('colors.blue.400');
+    --tw-prose-bold:          theme('colors.slate.100');
+    --tw-prose-counters:      theme('colors.slate.400');
+    --tw-prose-bullets:       theme('colors.slate.600');
+    --tw-prose-hr:            theme('colors.slate.700');
+    --tw-prose-quotes:        theme('colors.slate.100');
+    --tw-prose-quote-borders: theme('colors.blue.600');
+    --tw-prose-captions:      theme('colors.slate.400');
+    --tw-prose-code:          theme('colors.slate.200');
+    --tw-prose-pre-code:      theme('colors.slate.300');
+    --tw-prose-pre-bg:        #0d1117;
+    --tw-prose-th-borders:    theme('colors.slate.600');
+    --tw-prose-td-borders:    theme('colors.slate.700');
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   PAGEFIND UI — token overrides to match theme exactly
+   ═══════════════════════════════════════════════════════════════ */
+:root {
+  --pagefind-ui-scale:               1;
+  --pagefind-ui-primary:             #2563EB;
+  --pagefind-ui-text:                #0F172A;
+  --pagefind-ui-background:          #ffffff;
+  --pagefind-ui-border:              #E2E8F0;
+  --pagefind-ui-tag:                 #F8FAFC;
+  --pagefind-ui-border-width:        1px;
+  --pagefind-ui-border-radius:       0.875rem;
+  --pagefind-ui-image-border-radius: 0.625rem;
+  --pagefind-ui-font:                var(--font-sans);
+}
+
+[data-theme="dark"] {
+  --pagefind-ui-primary:    #60A5FA;
+  --pagefind-ui-text:       #E2E8F0;
+  --pagefind-ui-background: #1E293B;
+  --pagefind-ui-border:     #334155;
+  --pagefind-ui-tag:        #0F172A;
+}
+
+.pagefind-ui__search-input {
+  font-family: var(--font-sans) !important;
+  font-size: 1rem !important;
+  border-radius: 0.875rem !important;
+  transition: border-color 150ms ease, box-shadow 150ms ease !important;
+}
+
+.pagefind-ui__search-input:focus {
+  outline: none !important;
+  border-color: #2563EB !important;
+  box-shadow: 0 0 0 3px rgb(37 99 235 / 0.12) !important;
+}
+
+.pagefind-ui__result {
+  border-radius: 1rem !important;
+  border: 1px solid var(--pagefind-ui-border) !important;
+  padding: 1rem !important;
+  transition: border-color 150ms ease, box-shadow 150ms ease !important;
+}
+
+.pagefind-ui__result:hover {
+  border-color: rgb(37 99 235 / 0.30) !important;
+  box-shadow: 0 4px 20px -4px rgb(37 99 235 / 0.10) !important;
+}
+
+.pagefind-ui__result-title a {
+  font-weight: 600 !important;
+  color: var(--pagefind-ui-primary) !important;
+}
+
+.pagefind-ui__result-excerpt mark {
+  background: rgb(37 99 235 / 0.12) !important;
+  color: inherit !important;
+  border-radius: 2px !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   UTILITIES — one-off helpers not in Tailwind core
+   ═══════════════════════════════════════════════════════════════ */
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  /* 2xs font-size step for eyebrow labels */
+  .text-2xs {
+    font-size: 0.625rem;
+    line-height: 1rem;
+  }
+
+  /*
+    bg-primary/8, /6, /14, /12 — fractional opacity utilities.
+    Tailwind JIT generates these from template strings, but these
+    plain CSS declarations ensure they survive the DaisyUI custom-
+    theme pipeline and appear in correct cascade order.
+  */
+  .bg-primary\/8  { background-color: rgb(37 99 235 / 0.08); }
+  .bg-primary\/6  { background-color: rgb(37 99 235 / 0.06); }
+  .bg-primary\/14 { background-color: rgb(37 99 235 / 0.14); }
+  .bg-primary\/12 { background-color: rgb(37 99 235 / 0.12); }
+
+  [data-theme="dark"] .bg-primary\/8  { background-color: rgb(96 165 250 / 0.08); }
+  [data-theme="dark"] .bg-primary\/6  { background-color: rgb(96 165 250 / 0.06); }
+  [data-theme="dark"] .bg-primary\/14 { background-color: rgb(96 165 250 / 0.14); }
+  [data-theme="dark"] .bg-primary\/12 { background-color: rgb(96 165 250 / 0.12); }
+}

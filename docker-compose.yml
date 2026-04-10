@@ -1,0 +1,18 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        SITE_URL: ${SITE_URL}
+    ports:
+      - "4321:4321"
+    env_file:
+      - .env
+    environment:
+      HOST: 0.0.0.0
+      PORT: 4321
+    volumes:
+      - ./src/content/blog:/app/src/content/blog
+      - ./public/uploads:/app/public/uploads
+    restart: unless-stopped

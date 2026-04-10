@@ -1,0 +1,49 @@
+---
+export const prerender = false;
+
+import AdminPageLayout from '../../../layouts/AdminPageLayout.astro';
+import AdminLayout from '../../../components/admin/AdminLayout.vue';
+import PostForm from '../../../components/admin/PostForm.vue';
+import { getPost } from '../../../lib/posts';
+
+const slug = Astro.params.slug;
+
+if (!slug) {
+  return new Response(null, { status: 404 });
+}
+
+const post = getPost(slug);
+
+if (!post) {
+  return new Response(null, { status: 404 });
+}
+---
+<AdminPageLayout title={`Edit ${post.title}`}>
+<AdminLayout client:load={false} title={`Edit ${post.title}`} currentPath={Astro.url.pathname}>
+  <section class="mx-auto flex max-w-6xl flex-col gap-6">
+    <div class="flex items-center justify-between gap-3">
+      <div>
+        <p class="text-sm font-semibold uppercase tracking-[0.2em] text-primary">Admin</p>
+        <h1 class="text-3xl font-bold">Edit post</h1>
+      </div>
+      <a href="/admin/posts" class="btn btn-outline">Back to posts</a>
+    </div>
+
+    <div class="rounded-box border border-base-300 bg-base-100 p-6 shadow-sm">
+      <PostForm
+        client:load
+        slug={post.slug}
+        initial={{
+          title: post.title,
+          description: post.description,
+          publishDate: post.publishDate,
+          coverImage: post.coverImage ?? '',
+          body: post.body,
+          draft: post.draft,
+          tags: post.tags,
+        }}
+      />
+    </div>
+  </section>
+</AdminLayout>
+</AdminPageLayout>

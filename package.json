@@ -1,0 +1,50 @@
+{
+  "name": "blug",
+  "type": "module",
+  "version": "0.0.1",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check",
+    "astro:check": "astro check",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/node": "^10.0.4",
+    "@astrojs/rss": "^4.0.18",
+    "@astrojs/vue": "^6.0.1",
+    "@pagefind/default-ui": "^1.4.0",
+    "@tiptap/extension-image": "^3.22.3",
+    "@tiptap/extension-link": "^3.22.3",
+    "@tiptap/extension-placeholder": "^3.22.3",
+    "@tiptap/starter-kit": "^3.22.3",
+    "@tiptap/vue-3": "^3.3.0",
+    "astro": "^6.1.5",
+    "astro-pagefind": "^1.8.6",
+    "bcryptjs": "^3.0.3",
+    "formidable": "^3.5.4",
+    "gray-matter": "^4.0.3",
+    "jose": "^6.2.2",
+    "tailwindcss": "^3.4.18",
+    "tiptap-markdown": "^0.9.0",
+    "vue": "^3.5.24"
+  },
+  "devDependencies": {
+    "@antfu/eslint-config": "^8.1.1",
+    "@astrojs/check": "^0.9.2",
+    "@tailwindcss/typography": "^0.5.19",
+    "@types/bcryptjs": "^2.4.6",
+    "@types/formidable": "^3.5.1",
+    "@types/node": "^25.5.2",
+    "astro-eslint-parser": "^1.4.0",
+    "autoprefixer": "^10.4.27",
+    "daisyui": "^4.12.24",
+    "eslint": "^10.2.0",
+    "eslint-plugin-astro": "^1.7.0",
+    "typescript": "^5.9.3"
+  }
+}
